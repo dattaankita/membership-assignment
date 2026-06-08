@@ -20,6 +20,12 @@ public class MembershipTier {
 
     private Integer priority;
 
+    private Integer minOrderCount;
+
+    private Double minOrderValue;
+
+    private String cohort;
+
     public Long getId() {
         return id;
     }
@@ -42,5 +48,29 @@ public class MembershipTier {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    public Integer getMinOrderCount() {
+        return minOrderCount;
+    }
+
+    public void setMinOrderCount(Integer minOrderCount) {
+        this.minOrderCount = minOrderCount;
+    }
+
+    public Double getMinOrderValue() {
+        return minOrderValue;
+    }
+
+    public void setMinOrderValue(Double minOrderValue) {
+        this.minOrderValue = minOrderValue;
+    }
+
+    public String getCohort() {
+        return cohort;
+    }
+
+    public void setCohort(String cohort) {
+        this.cohort = cohort;
     }
 }

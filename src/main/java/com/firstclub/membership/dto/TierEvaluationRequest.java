@@ -1,16 +1,20 @@
-package com.firstclub.membership.strategy;
+package com.firstclub.membership.dto;
 
-import lombok.Builder;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
-@Builder
-@Getter
-public class UserMetrics {
+public class TierEvaluationRequest {
 
+    @NotNull
+    @Min(0)
     private Integer orderCount;
-    private Double totalOrderValue;
+
+    @NotNull
+    @Min(0)
+    private Double orderValue;
+
     private String cohort;
 
     public Integer getOrderCount() {
@@ -21,12 +25,12 @@ public class UserMetrics {
         this.orderCount = orderCount;
     }
 
-    public Double getTotalOrderValue() {
-        return totalOrderValue;
+    public Double getOrderValue() {
+        return orderValue;
     }
 
-    public void setTotalOrderValue(Double totalOrderValue) {
-        this.totalOrderValue = totalOrderValue;
+    public void setOrderValue(Double orderValue) {
+        this.orderValue = orderValue;
     }
 
     public String getCohort() {

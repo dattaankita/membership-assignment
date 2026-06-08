@@ -19,4 +19,16 @@ public class SubscriptionResponse {
     private Long remainingDays;
 
 
+    public SubscriptionResponse(Long id, Long userId, String planName, String tierName,
+                                SubscriptionStatus status, LocalDate startDate, LocalDate endDate,
+                                long remainingDays) {
+        this.subscriptionId = id;
+        this.userId = userId;
+        this.planName = planName;
+        this.tierName = tierName;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.remainingDays = remainingDays;
+    }
 }

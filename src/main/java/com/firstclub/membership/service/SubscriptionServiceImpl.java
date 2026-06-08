@@ -147,15 +147,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         LocalDate.now(),
                         subscription.getEndDate()));
 
-        return SubscriptionResponse.builder()
-                .subscriptionId(subscription.getId())
-                .userId(subscription.getUserId())
-                .planName(plan.getName())
-                .tierName(tier.getName())
-                .status(subscription.getStatus())
-                .startDate(subscription.getStartDate())
-                .endDate(subscription.getEndDate())
-                .remainingDays(remainingDays)
-                .build();
+        return new SubscriptionResponse(subscription.getId(), subscription.getUserId(),plan.getName(),tier.getName(),subscription.getStatus()
+                , subscription.getStartDate(),subscription.getEndDate(),remainingDays);
     }
 }
