@@ -1,14 +1,10 @@
 package com.firstclub.membership.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "membership_tier")
 public class MembershipTier {
 
@@ -22,9 +18,12 @@ public class MembershipTier {
 
     private Integer minOrderCount;
 
-    private Double minOrderValue;
+    private BigDecimal minOrderValue;
 
     private String cohort;
+
+    @OneToMany(mappedBy = "tier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TierBenefit> benefits;
 
     public Long getId() {
         return id;
@@ -58,11 +57,11 @@ public class MembershipTier {
         this.minOrderCount = minOrderCount;
     }
 
-    public Double getMinOrderValue() {
+    public BigDecimal getMinOrderValue() {
         return minOrderValue;
     }
 
-    public void setMinOrderValue(Double minOrderValue) {
+    public void setMinOrderValue(BigDecimal minOrderValue) {
         this.minOrderValue = minOrderValue;
     }
 
@@ -72,5 +71,13 @@ public class MembershipTier {
 
     public void setCohort(String cohort) {
         this.cohort = cohort;
+    }
+
+    public List<TierBenefit> getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(List<TierBenefit> benefits) {
+        this.benefits = benefits;
     }
 }

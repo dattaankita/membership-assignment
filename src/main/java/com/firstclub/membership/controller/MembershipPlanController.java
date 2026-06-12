@@ -1,25 +1,24 @@
 package com.firstclub.membership.controller;
 
-import com.firstclub.membership.entity.MembershipPlan;
+import com.firstclub.membership.dto.responses.MembershipPlanResponse;
 import com.firstclub.membership.service.MembershipPlanService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/plans")
-@RequiredArgsConstructor
 public class MembershipPlanController {
 
-    @Autowired
-    MembershipPlanService service;
+    private final MembershipPlanService planService;
+
+    public MembershipPlanController(MembershipPlanService planService) {
+        this.planService = planService;
+    }
 
     @GetMapping
-    public List<MembershipPlan> getPlans() {
-        return service.getAllPlans();
+    //"Get all membership plans"
+    public List<MembershipPlanResponse> getPlans() {
+
+        return planService.getAllPlans();
     }
 }

@@ -1,22 +1,25 @@
 package com.firstclub.membership.service;
 
-import com.firstclub.membership.entity.MembershipPlan;
+import com.firstclub.membership.dto.responses.MembershipPlanResponse;
 import com.firstclub.membership.repository.MembershipPlanRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class MembershipPlanServiceImpl implements MembershipPlanService {
 
-    @Autowired
-    MembershipPlanRepository repository;
+    private final MembershipPlanRepository repository;
+
+    public MembershipPlanServiceImpl(MembershipPlanRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
-    public List<MembershipPlan> getAllPlans() {
-        return repository.findAll();
+    public List<MembershipPlanResponse> getAllPlans() {
+
+        return repository.findAll().stream().map(plan ->
+                        new MembershipPlanResponse(plan.getId(), plan.getName(),
+                                plan.getDuration().name(), plan.getPrice()))
+                .toList();
     }
 }

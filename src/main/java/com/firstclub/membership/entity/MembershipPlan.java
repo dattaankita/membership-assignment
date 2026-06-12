@@ -2,16 +2,9 @@ package com.firstclub.membership.entity;
 
 import com.firstclub.membership.enums.PlanDuration;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "membership_plan")
 public class MembershipPlan {
 

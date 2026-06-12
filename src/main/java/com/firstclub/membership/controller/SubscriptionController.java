@@ -1,59 +1,56 @@
 package com.firstclub.membership.controller;
 
-import com.firstclub.membership.dto.SubscribeRequest;
-import com.firstclub.membership.dto.SubscriptionResponse;
+import com.firstclub.membership.dto.requests.SubscribeRequest;
+import com.firstclub.membership.dto.requests.UpgradeTierRequest;
+import com.firstclub.membership.dto.responses.SubscriptionResponse;
 import com.firstclub.membership.service.SubscriptionService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-
 
 @RestController
 @RequestMapping("/api/v1/subscriptions")
-@RequiredArgsConstructor
 public class SubscriptionController {
 
-    @Autowired
-    SubscriptionService service;
+    private final SubscriptionService subscriptionService;
+
+    public SubscriptionController(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
+    }
 
     @PostMapping
-    public SubscriptionResponse subscribe(@RequestBody @Valid SubscribeRequest request) {
-        return service.subscribe(request);
+    //Create new membership subscription
+    public SubscriptionResponse subscribe(@Valid @RequestBody SubscribeRequest request) {
+        return subscriptionService.subscribe(request);
     }
 
     @GetMapping("/{userId}")
-    public SubscriptionResponse getMembership(
-            @PathVariable Long userId,
-            @RequestParam(required = false)
-            @DateTimeFormat(pattern = "yyyy-MM-dd")
-            LocalDate startDate,
+    //Get current membership details
+    public SubscriptionResponse getMembership(@PathVariable Long userId) {
 
-            @RequestParam(required = false)
-            @DateTimeFormat(pattern = "yyyy-MM-dd")
-            LocalDate endDate) {
-
-        return service.getMembership(
-                userId,
-                startDate,
-                endDate);
+        return subscriptionService.getMembership(userId);
     }
 
-    @PutMapping("/{id}/upgrade")
-    public SubscriptionResponse upgrade(@PathVariable Long id, @RequestParam Long tierId) {
-        return service.upgradeTier(id, tierId);
+    @PutMapping("/{subscriptionId}/upgrade")
+    //Upgrade membership tier
+    public SubscriptionResponse upgradeTier(@PathVariable Long subscriptionId, @RequestBody UpgradeTierRequest request) {
+
+        return subscriptionService.upgradeTier(subscriptionId, request.getTierId());
     }
 
-    @PutMapping("/{id}/downgrade")
-    public SubscriptionResponse downgrade(@PathVariable Long id, @RequestParam Long tierId) {
-        return service.downgradeTier(id, tierId);
+    @PutMapping("/{subscriptionId}/downgrade")
+    //Downgrade membership tier
+    public SubscriptionResponse downgradeTier(@PathVariable Long subscriptionId, @RequestBody UpgradeTierRequest request) {
+
+        return subscriptionService.downgradeTier(subscriptionId, request.getTierId());
     }
 
+    @DeleteMapping("/{subscriptionId}")
+   //Cancel membership subscription
+    public ResponseEntity<Void> cancelSubscription(@PathVariable Long subscriptionId) {
 
-    @DeleteMapping("/{id}")
-    public void cancel(@PathVariable Long id) {
-        service.cancelSubscription(id);
+        subscriptionService.cancelSubscription(subscriptionId);
+
+        return ResponseEntity.noContent().build();
     }
 }

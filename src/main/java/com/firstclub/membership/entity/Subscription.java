@@ -2,38 +2,59 @@ package com.firstclub.membership.entity;
 
 import com.firstclub.membership.enums.SubscriptionStatus;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "user_subscription")
+@Table(name = "user_subscription",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_active_subscription",
+                        columnNames = {
+                                "user_id",
+                                "status"
+                        }
+                )
+        }
+)
 public class Subscription {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    private Long userId;
+        private Long userId;
 
-    private Long planId;
+        @ManyToOne
+        @JoinColumn(name = "plan_id")
+        private MembershipPlan plan;
 
-    private Long tierId;
+        @ManyToOne
+        @JoinColumn(name = "tier_id")
+        private MembershipTier tier;
 
-    @Enumerated(EnumType.STRING)
-    private SubscriptionStatus status;
+        @Enumerated(EnumType.STRING)
+        private SubscriptionStatus status;
 
-    private LocalDate startDate;
+        private LocalDate startDate;
 
-    private LocalDate endDate;
+        private LocalDate endDate;
 
-    @Version
-    private Long version;
+        @Version
+        private Long version;
+
+    public Subscription(Long userId, MembershipPlan plan, MembershipTier tier,
+                        SubscriptionStatus subscriptionStatus, LocalDate startDate,
+                        LocalDate endDate) {
+        this.userId = userId;
+        this.plan = plan;
+        this.tier = tier;
+        this.status = subscriptionStatus;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public Subscription() {
+    }
 
     public Long getId() {
         return id;
@@ -49,22 +70,6 @@ public class Subscription {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Long getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(Long planId) {
-        this.planId = planId;
-    }
-
-    public Long getTierId() {
-        return tierId;
-    }
-
-    public void setTierId(Long tierId) {
-        this.tierId = tierId;
     }
 
     public SubscriptionStatus getStatus() {
@@ -97,5 +102,21 @@ public class Subscription {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public MembershipPlan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(MembershipPlan plan) {
+        this.plan = plan;
+    }
+
+    public MembershipTier getTier() {
+        return tier;
+    }
+
+    public void setTier(MembershipTier tier) {
+        this.tier = tier;
     }
 }

@@ -1,6 +1,5 @@
-package com.firstclub.membership.dto;
+package com.firstclub.membership.dto.responses;
 
-import com.firstclub.membership.enums.SubscriptionStatus;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDate;
@@ -10,17 +9,24 @@ import java.time.LocalDate;
 public class SubscriptionResponse {
 
     private Long subscriptionId;
+
     private Long userId;
+
     private String planName;
+
     private String tierName;
-    private SubscriptionStatus status;
+
+    private String status;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
+
     private Long remainingDays;
 
 
     public SubscriptionResponse(Long id, Long userId, String planName, String tierName,
-                                SubscriptionStatus status, LocalDate startDate, LocalDate endDate,
+                                String status, LocalDate startDate, LocalDate endDate,
                                 long remainingDays) {
         this.subscriptionId = id;
         this.userId = userId;

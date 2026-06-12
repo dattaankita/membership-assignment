@@ -1,13 +1,9 @@
-package com.firstclub.membership.dto;
+package com.firstclub.membership.dto.requests;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 public class SubscribeRequest {
 
     @NotNull

@@ -1,13 +1,14 @@
 package com.firstclub.membership.service;
 
-import com.firstclub.membership.dto.TierEvaluationRequest;
-import com.firstclub.membership.entity.MembershipTier;
+import com.firstclub.membership.dto.requests.TierEvaluationRequest;
+import com.firstclub.membership.dto.response.MembershipTierResponse;
+import com.firstclub.membership.dto.responses.TierEvaluationResponse;
 
 import java.util.List;
 
 public interface MembershipTierService {
 
-    List<MembershipTier> getAllTiers();
+    List<MembershipTierResponse> getAllTiers();
 
-    MembershipTier evaluateTier(TierEvaluationRequest request);
+    TierEvaluationResponse evaluateTier(TierEvaluationRequest request);
 }
