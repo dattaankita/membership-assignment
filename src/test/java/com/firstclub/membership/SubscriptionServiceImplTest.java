@@ -60,25 +60,13 @@ class SubscriptionServiceImplTest {
         tier.setId(1L);
         tier.setName("Silver");
 
-        when(subscriptionRepository.findByUserIdAndStatus(
-                101L,
-                SubscriptionStatus.ACTIVE))
+        when(subscriptionRepository.findByUserIdAndStatus(101L, SubscriptionStatus.ACTIVE))
                 .thenReturn(Optional.empty());
-
-        when(planRepository.findById(1L))
-                .thenReturn(Optional.of(plan));
-
-        when(tierRepository.findById(1L))
-                .thenReturn(Optional.of(tier));
-
-        when(subscriptionRepository.save(any()))
-                .thenAnswer(i -> i.getArgument(0));
-
-        assertDoesNotThrow(
-                () -> service.subscribe(request));
-
-        verify(subscriptionRepository)
-                .save(any(Subscription.class));
+        when(planRepository.findById(1L)).thenReturn(Optional.of(plan));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(tier));
+        when(subscriptionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        assertDoesNotThrow(() -> service.subscribe(request));
+        verify(subscriptionRepository).save(any(Subscription.class));
     }
 
     @Test
@@ -89,21 +77,12 @@ class SubscriptionServiceImplTest {
         request.setPlanId(1L);
         request.setTierId(1L);
 
-        Subscription activeSubscription =
-                new Subscription();
+        Subscription activeSubscription = new Subscription();
+        activeSubscription.setStatus(SubscriptionStatus.ACTIVE);
 
-        activeSubscription.setStatus(
-                SubscriptionStatus.ACTIVE);
-
-        when(subscriptionRepository.findByUserIdAndStatus(
-                101L,
-                SubscriptionStatus.ACTIVE))
-                .thenReturn(
-                        Optional.of(activeSubscription));
-
-        assertThrows(
-                BadRequestException.class,
-                () -> service.subscribe(request));
+        when(subscriptionRepository.findByUserIdAndStatus(101L, SubscriptionStatus.ACTIVE))
+                .thenReturn(Optional.of(activeSubscription));
+        assertThrows(BadRequestException.class, () -> service.subscribe(request));
     }
 
     @Test
@@ -111,9 +90,7 @@ class SubscriptionServiceImplTest {
 
         when(tierRepository.findAll()).thenReturn(List.of());
 
-        TierEvaluationRequest request =
-                new TierEvaluationRequest();
-
+        TierEvaluationRequest request = new TierEvaluationRequest();
         request.setOrderCount(1);
         request.setOrderValue(10D);
         request.setCohort("ALL");

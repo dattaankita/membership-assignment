@@ -35,12 +35,8 @@ public class MembershipTierServiceImpl implements MembershipTierService {
                         new MembershipTierResponse(tier.getId(), tier.getName(),tier.getPriority(),
                                 benefitRepository.findByTierId(tier.getId())
                                                 .stream()
-                                                .map(benefit ->
-                                                        new BenefitResponse(benefit.getBenefitName(),
-                                                                benefit.getBenefitValue()))
-                                                .toList()))
-
-                                .toList();
+                                                .map(benefit -> new BenefitResponse(benefit.getBenefitName(),
+                                                                benefit.getBenefitValue())).toList())).toList();
     }
 
     @Override
@@ -56,8 +52,7 @@ public class MembershipTierServiceImpl implements MembershipTierService {
                         Integer.compare(
                                 t1.getPriority(),
                                 t2.getPriority()))
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("No eligible tier found"));
+                .orElseThrow(() -> new ResourceNotFoundException("No eligible tier found"));
         return new TierEvaluationResponse(eligibleTier.getName());
     }
 }

@@ -35,8 +35,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Transactional
     public SubscriptionResponse subscribe(SubscribeRequest request) {
 
-        subscriptionRepository
-                .findByUserIdAndStatus(request.getUserId(), SubscriptionStatus.ACTIVE)
+        subscriptionRepository.findByUserIdAndStatus(request.getUserId(), SubscriptionStatus.ACTIVE)
                 .ifPresent(subscription -> {
                     throw new BadRequestException("User already has an active subscription");
                 });
@@ -48,14 +47,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         .orElseThrow(() -> new ResourceNotFoundException("Tier not found"));
 
         LocalDate startDate = LocalDate.now();
-
         LocalDate endDate = calculateEndDate(startDate, plan.getDuration());
 
-        Subscription subscription = new Subscription(request.getUserId(),plan, tier,
-                SubscriptionStatus.ACTIVE, startDate, endDate);
-
+        Subscription subscription = new Subscription(request.getUserId(),plan, tier, SubscriptionStatus.ACTIVE,
+                startDate, endDate);
         Subscription saved = subscriptionRepository.save(subscription);
-
         return mapToResponse(saved);
     }
 
@@ -66,9 +62,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         .orElseThrow(() -> new ResourceNotFoundException("Subscription not found"));
 
         if (subscription.getEndDate().isBefore(LocalDate.now())) {
-
             subscription.setStatus(SubscriptionStatus.EXPIRED);
-
             subscription = subscriptionRepository.save(subscription);
         }
 
@@ -80,114 +74,67 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public SubscriptionResponse upgradeTier(Long subscriptionId, Long newTierId) {
 
         Subscription subscription = getSubscription(subscriptionId);
-
-        MembershipTier currentTier =
-                subscription.getTier();
-
-        MembershipTier newTier =
-                tierRepository.findById(newTierId)
+        MembershipTier currentTier = subscription.getTier();
+        MembershipTier newTier = tierRepository.findById(newTierId)
                         .orElseThrow(() -> new ResourceNotFoundException("Tier not found"));
 
         validateUpgrade(currentTier, newTier);
-
         subscription.setTier(newTier);
-
         Subscription updated = subscriptionRepository.save(subscription);
-
         return mapToResponse(updated);
     }
 
     @Override
     @Transactional
     public SubscriptionResponse downgradeTier(Long subscriptionId, Long newTierId) {
-
         Subscription subscription = getSubscription(subscriptionId);
-
-        MembershipTier currentTier =
-                subscription.getTier();
-
-        MembershipTier newTier =
-                tierRepository.findById(newTierId)
+        MembershipTier currentTier = subscription.getTier();
+        MembershipTier newTier = tierRepository.findById(newTierId)
                         .orElseThrow(() -> new ResourceNotFoundException("Tier not found"));
 
         validateDowngrade(currentTier, newTier);
-
         subscription.setTier(newTier);
-
-        Subscription updated =
-                subscriptionRepository.save(subscription);
-
+        Subscription updated = subscriptionRepository.save(subscription);
         return mapToResponse(updated);
     }
 
     @Override
     @Transactional
-    public void cancelSubscription(
-            Long subscriptionId) {
-
-        Subscription subscription =
-                getSubscription(subscriptionId);
-
-        subscription.setStatus(
-                SubscriptionStatus.CANCELLED);
-
+    public void cancelSubscription(Long subscriptionId) {
+        Subscription subscription = getSubscription(subscriptionId);
+        subscription.setStatus(SubscriptionStatus.CANCELLED);
         subscriptionRepository.save(subscription);
     }
 
-    private Subscription getSubscription(
-            Long subscriptionId) {
-
-        return subscriptionRepository.findById(
-                        subscriptionId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Subscription not found"));
+    private Subscription getSubscription(Long subscriptionId) {
+        return subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subscription not found"));
     }
 
-    private void validateUpgrade(
-            MembershipTier currentTier,
-            MembershipTier newTier) throws BadRequestException {
-
+    private void validateUpgrade(MembershipTier currentTier, MembershipTier newTier) throws BadRequestException {
         if (newTier.getPriority() <= currentTier.getPriority()) {
             throw new BadRequestException("Upgrade must move to a higher tier");
         }
     }
 
-    private void validateDowngrade(
-            MembershipTier currentTier,
-            MembershipTier newTier) throws BadRequestException {
-
-        if (newTier.getPriority()
-                >= currentTier.getPriority()) {
-
+    private void validateDowngrade(MembershipTier currentTier, MembershipTier newTier) throws BadRequestException {
+        if (newTier.getPriority() >= currentTier.getPriority()) {
             throw new BadRequestException("Downgrade must move to a lower tier");
         }
     }
 
-    private LocalDate calculateEndDate(
-            LocalDate startDate,
-            PlanDuration duration) {
-
+    private LocalDate calculateEndDate(LocalDate startDate, PlanDuration duration) {
         return switch (duration) {
+            case MONTHLY -> startDate.plusMonths(1);
 
-            case MONTHLY ->
-                    startDate.plusMonths(1);
+            case QUARTERLY -> startDate.plusMonths(3);
 
-            case QUARTERLY ->
-                    startDate.plusMonths(3);
-
-            case YEARLY ->
-                    startDate.plusYears(1);
+            case YEARLY -> startDate.plusYears(1);
         };
     }
 
-    private SubscriptionResponse mapToResponse(
-            Subscription subscription) {
-
-        long remainingDays =
-                ChronoUnit.DAYS.between(
-                        LocalDate.now(),
-                        subscription.getEndDate());
+    private SubscriptionResponse mapToResponse(Subscription subscription) {
+        long remainingDays = ChronoUnit.DAYS.between(LocalDate.now(), subscription.getEndDate());
 
         return new SubscriptionResponse(subscription.getId(),subscription.getUserId(),subscription.getPlan().getName()
                ,subscription.getTier().getName(),subscription.getStatus().name(),subscription.getStartDate(),subscription.getEndDate(),

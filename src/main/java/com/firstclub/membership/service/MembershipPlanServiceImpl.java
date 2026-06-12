@@ -19,7 +19,6 @@ public class MembershipPlanServiceImpl implements MembershipPlanService {
 
         return repository.findAll().stream().map(plan ->
                         new MembershipPlanResponse(plan.getId(), plan.getName(),
-                                plan.getDuration().name(), plan.getPrice()))
-                .toList();
+                                plan.getDuration().name(), plan.getPrice())).toList();
     }
 }

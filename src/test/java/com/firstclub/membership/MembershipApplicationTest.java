@@ -34,23 +34,15 @@ class MembershipTierServiceImplTest {
         silver.setMinOrderValue(BigDecimal.ZERO);
         silver.setCohort("ALL");
 
-        when(tierRepository.findAll())
-                .thenReturn(List.of(silver));
+        when(tierRepository.findAll()).thenReturn(List.of(silver));
 
-        TierEvaluationRequest request =
-                new TierEvaluationRequest();
-
+        TierEvaluationRequest request = new TierEvaluationRequest();
         request.setOrderCount(1);
         request.setOrderValue(100d);
-
         request.setCohort("ALL");
 
-        TierEvaluationResponse response =
-                service.evaluateTier(request);
-
-        assertEquals(
-                "Silver",
-                response.getTierName());
+        TierEvaluationResponse response = service.evaluateTier(request);
+        assertEquals("Silver", response.getTierName());
     }
 
     @Test
@@ -67,28 +59,17 @@ class MembershipTierServiceImplTest {
         gold.setName("Gold");
         gold.setPriority(2);
         gold.setMinOrderCount(10);
-        gold.setMinOrderValue(
-                BigDecimal.valueOf(5000));
-
+        gold.setMinOrderValue(BigDecimal.valueOf(5000));
         gold.setCohort("PREMIUM");
 
-        when(tierRepository.findAll())
-                .thenReturn(List.of(silver, gold));
+        when(tierRepository.findAll()).thenReturn(List.of(silver, gold));
 
-        TierEvaluationRequest request =
-                new TierEvaluationRequest();
-
+        TierEvaluationRequest request = new TierEvaluationRequest();
         request.setOrderCount(15);
-
         request.setOrderValue(7000D);
-
         request.setCohort("PREMIUM");
 
-        TierEvaluationResponse response =
-                service.evaluateTier(request);
-
-        assertEquals(
-                "Gold",
-                response.getTierName());
+        TierEvaluationResponse response = service.evaluateTier(request);
+        assertEquals("Gold", response.getTierName());
     }
 }
